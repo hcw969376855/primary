@@ -1,0 +1,70 @@
+
+var methodInit=false,
+	defaultOptions={
+		"title":"标题",
+		time:3000,
+	},
+	init =function (){};
+init.prototype={
+	$alert:function(options){
+		let opt=Object.assign(defaultOptions,options),
+			maskCssOptions={
+				"position":"fixed",
+				"z-index":500,
+				"left":0,
+				"top":0,
+				"width":"100%",
+				"height":"100%",
+			},
+			layerCssOptions={
+				"position":"fixed",
+				"z-index":550,
+				"left":"0",
+				"top":"50%",
+				"background":"rgba(0,0,0,0.5)",
+				"padding":"10px",
+				"color":"#fff",
+				"max-width":"80%",
+				"font-size":"1.4rem",
+				"transition":"left 300ms",
+				"opacity": 0,
+				"transform":"scale(1,1)"
+			},
+			dom=document.createElement('div'),
+			mask=document.createElement('div');
+			dom.innerHTML=opt.title?opt.title:'提示';
+			for(let key in maskCssOptions){
+				mask.style[key]=maskCssOptions[key]
+			}
+			for(let key in layerCssOptions){
+				dom.style[key]=layerCssOptions[key]
+			}
+			document.body.appendChild(dom);
+			document.body.appendChild(mask);
+			dom.style.margin=-(dom.offsetHeight/2)+'px 0 0 -'+ (dom.offsetWidth/2)+'px';
+			dom.style.opacity=1;
+			dom.style.left="50%";
+			let items=setTimeout(()=>{
+				dom.style.transform="scale(0,0)";
+				dom.style.opacity=0;
+				dom.style.transition="all 500ms";
+				clearTimeout(items);
+				let dom_remove=setTimeout(()=>{
+					dom.remove();
+					mask.remove();
+					clearTimeout(dom_remove);
+				},700)
+			},opt.time)
+	},
+};
+
+	function get_init(obj){
+		
+			if(methodInit==false){
+				methodInit=true;
+				return new init(obj);
+			}
+		
+	}
+
+export default get_init();
